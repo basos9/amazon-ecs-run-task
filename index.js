@@ -10,7 +10,11 @@ const IGNORED_TASK_DEFINITION_ATTRIBUTES = [
   'taskDefinitionArn',
   'requiresAttributes',
   'revision',
-  'status'
+  'status',
+  'runtimePlatform'
+];
+const IGNORED_CONT_DEF_ATTRIBUTES = [
+  'portMappings'
 ];
 
 const WAIT_DEFAULT_DELAY_SEC = 5;
@@ -76,6 +80,23 @@ function removeIgnoredAttributes(taskDef) {
   return taskDef;
 }
 
+function removeIgnoredContainerAttributes(taskDef) {
+  if (!taskDef.containerDefinitions) throw new Error("Missing containerDefinitions");
+  for (var contDef of taskDef.containerDefinitions) {
+    for (var attribute of IGNORED_CONT_DEF_ATTRIBUTES) {
+      if (contDef[attribute]) {
+        const name=contDef.name || '(null)';
+        core.warning(`Ignoring property '${attribute}' in the container '${name}'. ` +
+          'This property is returned by the Amazon ECS DescribeTaskDefinition API and may be shown in the ECS console, ' +
+          'but it is not a valid field when registering a new task definition. ' +
+          'This field can be safely removed from your task definition file.');
+        delete contDef[attribute];
+      }
+    }
+  }
+  return taskDef;
+}
+
 async function run() {
   try {
     const agent = 'amazon-ecs-run-task-for-github-actions'
@@ -101,7 +122,7 @@ async function run() {
       taskDefinitionFile :
       path.join(process.env.GITHUB_WORKSPACE, taskDefinitionFile);
     const fileContents = fs.readFileSync(taskDefPath, 'utf8');
-    const taskDefContents = removeIgnoredAttributes(cleanNullKeys(yaml.parse(fileContents)));
+    const taskDefContents = removeIgnoredContainerAttributes(removeIgnoredAttributes(cleanNullKeys(yaml.parse(fileContents))));
 
     let registerResponse;
     try {

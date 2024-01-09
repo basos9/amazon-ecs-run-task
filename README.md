@@ -162,7 +162,7 @@ Note: the policy above assumes the account has opted in to the ECS long ARN form
 
 ## Release new version
 ```
-ncc build index.js -o dist
+npm run package
 git add dist
 git commit -m "what is what"
 git tag -a -m "A release" v1.1
