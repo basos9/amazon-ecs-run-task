@@ -4,7 +4,7 @@ const aws = require('aws-sdk');
 const yaml = require('yaml');
 const fs = require('fs');
 
-const WAIT_DEFAULT_DELAY_SEC = 10;
+const WAIT_DEFAULT_DELAY_SEC = 5;
 const MAX_WAIT_MINUTES = 360;
 
 // Attributes that are returned by DescribeTaskDefinition, but are not valid RegisterTaskDefinition inputs

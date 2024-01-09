@@ -14,7 +14,11 @@
         }
       ],
       "essential": true,
-      "command": "echo \"Doing work\"; date; sleep $SL; date; echo \"Done\"",
+      "command": [
+        "bash",
+        "-c",
+        "set -e; echo \"Doing work\"; date; sleep $SL; date; echo \"Done\""
+      ],
       "environment": [
         {
           "name": "SL",
