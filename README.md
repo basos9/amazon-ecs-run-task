@@ -160,6 +160,30 @@ This action requires the following minimum set of permissions:
 
 Note: the policy above assumes the account has opted in to the ECS long ARN format.
 
+## Release new version
+```
+ncc build index.js -o dist
+git add dist
+git commit -m "what is what"
+git tag -a -m "A release" v1.1
+git push --follow-tags
+```
+
+Test locally with act
+```
+# create needed configs
+cat >.act.env <<EOF
+ECS_CLUSTER=<a cluster>
+ECS_TASK_COUNT=1
+AWS_REGION=eu-central-1
+AWS_ACCESS_KEY_ID=<a key>
+EOF
+cat >.act.secrets <<'EOF'
+AWS_SECRET_ACCESS_KEY=<a secret>
+act.sh workflow_dispatch
+EOF
+```
+
 ## Troubleshooting
 
 This action emits debug logs to help troubleshoot deployment failures.  To see the debug logs, create a secret named `ACTIONS_STEP_DEBUG` with value `true` in your repository.

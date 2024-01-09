@@ -1,0 +1,58 @@
+{
+  "containerDefinitions": [
+    {
+      "name": "test-worker",
+      "image": "debian:latest",
+      "cpu": 0,
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "hostPort": 0,
+          "protocol": "tcp",
+          "name": "test-worker-80-tcp",
+          "appProtocol": "http"
+        }
+      ],
+      "essential": true,
+      "command": [
+        "bash",
+        "-c",
+        "'echo \"Doing work\"; date; sleep $SL; date; echo \"Done\"'"
+      ],
+      "environment": [
+        {
+          "name": "SL",
+          "value": "30"
+        }
+      ],
+      "environmentFiles": [],
+      "mountPoints": [],
+      "volumesFrom": [],
+      "ulimits": [],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-create-group": "true",
+          "awslogs-group": "/ecs/testTask",
+          "awslogs-region": "eu-central-1",
+          "awslogs-stream-prefix": "ecs"
+        },
+        "secretOptions": []
+      }
+    }
+  ],
+  "family": "testTask",
+  "taskRoleArn": "arn:aws:iam::473136926504:role/ecsTaskExecutionRole",
+  "executionRoleArn": "arn:aws:iam::473136926504:role/ecsTaskExecutionRole",
+  "volumes": [],
+  "placementConstraints": [],
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "requiresCompatibilities": [
+    "EC2"
+  ],
+  "cpu": "1024",
+  "memory": "1024"
+}

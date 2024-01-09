@@ -1,0 +1,37 @@
+name: "functional-test"
+on:
+  workflow_dispatch:
+
+  push:
+    branches:
+      - master
+      - 'releases/*'
+
+jobs:
+  test-action:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - if: ${{ ! env.ACT }}
+      run: |      
+        echo "ECS_CLUSTER=${{ vars.ECS_CLUSTER }}" >> $GITHUB_ENV
+        echo "ECS_TASK_COUNT=${{ vars.ECS_TASK_COUNT }}" >> $GITHUB_ENV
+        echo "AWS_ACCESS_KEY_ID=${{ vars.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV"
+        echo "AWS_REGION=${{ vars.AWS_REGION }}" >> $GITHUB_ENV"
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+    
+    - uses: ./
+      with:
+        task-definition: test/test-task-ecs-td.json
+        cluster: ${{ env.ECS_CLUSTER }}
+        count: ${{ env.ECS_TASK_COUNT }}
+        started-by: "Github test by ${{ github.actor }}"
+        wait-for-finish: true
+        wait-for-minutes: 8
