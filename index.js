@@ -4,6 +4,9 @@ const aws = require('aws-sdk');
 const yaml = require('yaml');
 const fs = require('fs');
 
+const WAIT_DEFAULT_DELAY_SEC = 10;
+const MAX_WAIT_MINUTES = 360;
+
 // Attributes that are returned by DescribeTaskDefinition, but are not valid RegisterTaskDefinition inputs
 const IGNORED_TASK_DEFINITION_ATTRIBUTES = [
   'compatibilities',
@@ -11,14 +14,15 @@ const IGNORED_TASK_DEFINITION_ATTRIBUTES = [
   'requiresAttributes',
   'revision',
   'status',
+  'registeredAt',
+  'deregisteredAt',
+  'registeredBy',
   'runtimePlatform'
 ];
 const IGNORED_CONT_DEF_ATTRIBUTES = [
   'portMappings'
 ];
 
-const WAIT_DEFAULT_DELAY_SEC = 5;
-const MAX_WAIT_MINUTES = 360;
 
 function isEmptyValue(value) {
   if (value === null || value === undefined || value === '') {
