@@ -11,10 +11,9 @@ jobs:
   test-action:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
 
     - if: ${{ ! env.ACT }}
-      run: |      
+      run: |
         echo "ECS_CLUSTER=${{ vars.ECS_CLUSTER }}" >> $GITHUB_ENV
         echo "ECS_TASK_COUNT=${{ vars.ECS_TASK_COUNT }}" >> $GITHUB_ENV
         echo "AWS_ACCESS_KEY_ID=${{ vars.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
@@ -27,6 +26,8 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.AWS_REGION }}
     
+    - uses: actions/checkout@v4
+
     - uses: ./
       with:
         task-definition: test/test-task-ecs-td.json
