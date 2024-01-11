@@ -2,11 +2,6 @@ name: "functional-test"
 on:
   workflow_dispatch:
 
-  push:
-    branches:
-      - master
-      - 'releases/*'
-
 jobs:
   test-action:
     runs-on: ubuntu-latest
